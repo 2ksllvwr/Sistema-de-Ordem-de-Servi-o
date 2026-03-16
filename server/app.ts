@@ -20,6 +20,8 @@ app.get("/api/health", async (_req, res) => {
   res.json({
     ok: true,
     databaseReady,
+    mongoConfigured: Boolean(process.env.MONGODB_URI),
+    jwtConfigured: Boolean(process.env.JWT_SECRET),
   });
 });
 
