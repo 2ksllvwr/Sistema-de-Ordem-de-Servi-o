@@ -2,7 +2,6 @@ import { useState } from "react";
 import { LogIn, ShieldCheck, UserPlus } from "lucide-react";
 import { fetchJson } from "../lib/api";
 import { setAuthToken, type AuthUser } from "../lib/session";
-import { getDefaultApiHint, getStoredApiBaseUrl, setStoredApiBaseUrl } from "../lib/runtimeConfig";
 import { AstraLogo } from "./Sidebar";
 
 interface AuthResponse {
@@ -19,19 +18,15 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [apiUrl, setApiUrl] = useState(getStoredApiBaseUrl());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [savedApiNotice, setSavedApiNotice] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setLoading(true);
     setError(null);
-    setSavedApiNotice(null);
 
     try {
-      setStoredApiBaseUrl(apiUrl);
       const response = await fetchJson<AuthResponse>(`/auth/${mode}`, {
         method: "POST",
         body: JSON.stringify(
@@ -48,12 +43,6 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
     } finally {
       setLoading(false);
     }
-  }
-
-  function handleSaveApiUrl() {
-    setStoredApiBaseUrl(apiUrl);
-    setSavedApiNotice(apiUrl.trim() ? "URL da API salva no app." : "Voltando para a configuracao padrao desta plataforma.");
-    setError(null);
   }
 
   return (
@@ -114,29 +103,6 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
             <p className="mt-2 text-sm text-slate-500">
               {mode === "login" ? "Use email e senha para abrir o sistema." : "Cadastre o primeiro usuario que vai administrar o app."}
             </p>
-          </div>
-
-          <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <label className="mb-1 block text-sm font-semibold text-slate-700">URL da API</label>
-            <input
-              value={apiUrl}
-              onChange={event => setApiUrl(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
-              placeholder={getDefaultApiHint()}
-            />
-            <p className="mt-2 text-xs text-slate-500">
-              No Android, use a URL publica da sua Netlify, por exemplo `https://seu-site.netlify.app/api`.
-            </p>
-            <button
-              type="button"
-              onClick={handleSaveApiUrl}
-              className="mt-3 rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-            >
-              Salvar URL da API
-            </button>
-            {savedApiNotice && (
-              <p className="mt-2 text-xs font-medium text-emerald-700">{savedApiNotice}</p>
-            )}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

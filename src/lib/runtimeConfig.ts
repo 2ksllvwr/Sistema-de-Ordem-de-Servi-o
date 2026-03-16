@@ -1,6 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 
 const API_BASE_URL_KEY = "astra_api_base_url";
+const DEFAULT_PUBLIC_API_URL = "https://sistemadeos.netlify.app/.netlify/functions/api";
 
 function normalizeApiBaseUrl(value: string) {
   return value.trim().replace(/\/+$/, "");
@@ -31,20 +32,16 @@ export function getApiBaseUrl() {
   }
 
   if (typeof window !== "undefined" && window.location.protocol.startsWith("http")) {
-    return "/api";
+    return normalizeApiBaseUrl(new URL("/.netlify/functions/api", window.location.origin).toString());
   }
 
   if (Capacitor.isNativePlatform()) {
-    return "";
+    return DEFAULT_PUBLIC_API_URL;
   }
 
-  return "/api";
+  return DEFAULT_PUBLIC_API_URL;
 }
 
 export function getDefaultApiHint() {
-  if (typeof window !== "undefined" && window.location.hostname) {
-    return `https://seu-site.netlify.app/api`;
-  }
-
-  return "https://seu-site.netlify.app/api";
+  return DEFAULT_PUBLIC_API_URL;
 }
