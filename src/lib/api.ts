@@ -1,9 +1,18 @@
-const API_URL = import.meta.env.VITE_API_URL?.trim() ?? "";
+import { getAuthToken } from "./session";
+import { getApiBaseUrl } from "./runtimeConfig";
 
 export async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, {
+  const token = getAuthToken();
+  const apiBaseUrl = getApiBaseUrl();
+
+  if (!apiBaseUrl) {
+    throw new Error("Defina a URL da API antes de continuar.");
+  }
+
+  const response = await fetch(`${apiBaseUrl}${path}`, {
     headers: {
       "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(init?.headers ?? {}),
     },
     ...init,
@@ -18,5 +27,5 @@ export async function fetchJson<T>(path: string, init?: RequestInit): Promise<T>
 }
 
 export function isApiConfigured() {
-  return Boolean(API_URL);
+  return Boolean(getApiBaseUrl());
 }

@@ -8,19 +8,21 @@ interface SidebarProps {
   mobileOpen: boolean;
   onToggleMobile: () => void;
   counts: { orders: number; budgets: number; clients: number };
+  userName: string;
+  onLogout: () => void;
 }
 
 const navItems: { page: Page; label: string; icon: React.ReactNode; section?: string }[] = [
   { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-  { page: 'orders', label: 'Ordens de Serviço', icon: <ClipboardList size={20} />, section: 'Gestão' },
-  { page: 'budgets', label: 'Orçamentos', icon: <Calculator size={20} /> },
-  { page: 'financeiro', label: 'Financeiro', icon: <Wallet size={20} />, section: 'Finanças' },
+  { page: 'orders', label: 'Ordens de Servico', icon: <ClipboardList size={20} />, section: 'Gestao' },
+  { page: 'budgets', label: 'Orcamentos', icon: <Calculator size={20} /> },
+  { page: 'financeiro', label: 'Financeiro', icon: <Wallet size={20} />, section: 'Financas' },
   { page: 'clients', label: 'Clientes', icon: <Users size={20} />, section: 'Cadastros' },
-  { page: 'settings', label: 'Configurações', icon: <Settings size={20} />, section: 'Sistema' },
+  { page: 'settings', label: 'Configuracoes', icon: <Settings size={20} />, section: 'Sistema' },
 ];
 
 const bottomNavItems: { page: Page; label: string; icon: React.ReactNode }[] = [
-  { page: 'dashboard', label: 'Início', icon: <LayoutDashboard size={20} /> },
+  { page: 'dashboard', label: 'Inicio', icon: <LayoutDashboard size={20} /> },
   { page: 'orders', label: 'Ordens', icon: <ClipboardList size={20} /> },
   { page: 'new-order', label: 'Nova OS', icon: <PlusCircle size={22} /> },
   { page: 'financeiro', label: 'Financeiro', icon: <Wallet size={20} /> },
@@ -47,7 +49,7 @@ function AstraLogo({ size = 40 }: { size?: number }) {
 
 export { AstraLogo };
 
-export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleMobile, counts }: SidebarProps) {
+export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleMobile, counts, userName, onLogout }: SidebarProps) {
   const getBadge = (page: Page) => {
     if (page === 'orders') return counts.orders;
     if (page === 'budgets') return counts.budgets;
@@ -64,14 +66,13 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
 
   return (
     <>
-      {/* ===== MOBILE TOP BAR ===== */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-lg border-b border-slate-700/50 safe-top">
         <div className="flex items-center justify-between px-4 h-14">
           <div className="flex items-center gap-2.5">
             <AstraLogo size={32} />
             <div>
               <h1 className="font-bold text-white text-sm leading-none tracking-tight">Astra Tech</h1>
-              <p className="text-[9px] text-slate-400 font-medium">Gestão de Serviços</p>
+              <p className="text-[9px] text-slate-400 font-medium">Gestao de Servicos</p>
             </div>
           </div>
           <button
@@ -84,7 +85,6 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
         </div>
       </header>
 
-      {/* ===== MOBILE SLIDE MENU (full screen overlay) ===== */}
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={onToggleMobile} />
       )}
@@ -132,17 +132,23 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
         </nav>
 
         <div className="p-4 border-t border-slate-700/50">
+          <p className="mb-3 text-xs text-slate-400">Conectado como {userName}</p>
           <button
             onClick={() => handleNav('new-order')}
             className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 shadow-lg shadow-cyan-500/25"
           >
             <PlusCircle size={18} />
-            Nova Ordem de Serviço
+            Nova Ordem de Servico
+          </button>
+          <button
+            onClick={onLogout}
+            className="mt-3 w-full rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white"
+          >
+            Sair
           </button>
         </div>
       </div>
 
-      {/* ===== MOBILE BOTTOM BAR ===== */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-lg border-t border-slate-700/50 safe-bottom">
         <div className="flex items-center justify-around h-16 px-1">
           {bottomNavItems.map(item => {
@@ -176,20 +182,17 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
         </div>
       </nav>
 
-      {/* ===== DESKTOP SIDEBAR ===== */}
       <aside className="hidden lg:flex fixed top-0 left-0 h-full w-[260px] bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white z-40 flex-col shadow-2xl">
-        {/* Logo */}
         <div className="p-5 border-b border-slate-700/50">
           <div className="flex items-center gap-3">
             <AstraLogo size={44} />
             <div>
               <h1 className="font-extrabold text-lg leading-tight tracking-tight text-white">Astra Tech</h1>
-              <p className="text-[11px] text-slate-400 font-medium">Gestão de Serviços</p>
+              <p className="text-[11px] text-slate-400 font-medium">Gestao de Servicos</p>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto scrollbar-thin">
           {(() => { lastSection = ''; return null; })()}
           {navItems.map(item => {
@@ -228,14 +231,20 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
           })}
         </nav>
 
-        {/* New Order Button */}
         <div className="p-4 border-t border-slate-700/50">
+          <p className="mb-3 text-xs text-slate-400">Conectado como {userName}</p>
           <button
             onClick={() => onNavigate('new-order')}
             className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 shadow-lg shadow-cyan-500/25 active:scale-[0.98]"
           >
             <PlusCircle size={18} />
             Nova Ordem
+          </button>
+          <button
+            onClick={onLogout}
+            className="mt-3 w-full rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-slate-700/50 hover:text-white"
+          >
+            Sair
           </button>
         </div>
       </aside>

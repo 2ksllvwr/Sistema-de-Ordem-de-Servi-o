@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Sidebar, { Page } from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import OrdersList from './components/OrdersList';
@@ -6,10 +6,17 @@ import OrderForm from './components/OrderForm';
 import ClientsList from './components/ClientsList';
 import CompanySettings from './components/CompanySettings';
 import Financeiro from './components/Financeiro';
+import AuthScreen from './components/AuthScreen';
 import { useStore } from './store/useStore';
 import { ServiceOrder } from './types';
+import { fetchJson } from './lib/api';
+import { clearAuthToken, getAuthToken, type AuthUser } from './lib/session';
 
-export default function App() {
+interface MeResponse {
+  user: AuthUser;
+}
+
+function AuthenticatedApp({ user, onLogout }: { user: AuthUser; onLogout: () => void }) {
   const store = useStore();
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -54,6 +61,13 @@ export default function App() {
     setEditingOrder(null);
   }, [store]);
 
+  const handleMigrateLocalData = useCallback(async () => {
+    const migrated = await store.migrateLocalDataToApi();
+    if (migrated) {
+      window.alert('Dados locais enviados para o MongoDB com sucesso.');
+    }
+  }, [store]);
+
   const renderPage = () => {
     switch (currentPage) {
       case 'dashboard':
@@ -75,7 +89,7 @@ export default function App() {
             onDelete={store.deleteOrder}
             onChangeStatus={store.changeStatus}
             onUpdateOrder={store.updateOrder}
-            title="Ordens de Serviço"
+            title="Ordens de Servico"
             company={store.company}
           />
         );
@@ -90,7 +104,7 @@ export default function App() {
             onChangeStatus={store.changeStatus}
             onUpdateOrder={store.updateOrder}
             filterStatus="orcamento"
-            title="Orçamentos"
+            title="Orcamentos"
             company={store.company}
           />
         );
@@ -153,6 +167,8 @@ export default function App() {
         onNavigate={handleNavigate}
         mobileOpen={mobileOpen}
         onToggleMobile={() => setMobileOpen(!mobileOpen)}
+        userName={user.name}
+        onLogout={onLogout}
         counts={{
           orders: activeOrders.length,
           budgets: budgets.length,
@@ -160,13 +176,31 @@ export default function App() {
         }}
       />
 
-      {/* Main content area */}
       <main className="lg:ml-[260px] min-h-screen">
         <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-6 pt-[72px] pb-24 lg:pt-6 lg:pb-6">
           <div className="max-w-7xl mx-auto">
             {store.storageMode === 'local' && (
               <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
                 Banco remoto ainda nao conectado. O sistema esta funcionando com armazenamento local.
+              </div>
+            )}
+            {store.storageMode === 'api' && (
+              <div className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-semibold">MongoDB Atlas conectado.</p>
+                  <p className="text-emerald-700">
+                    Novas alteracoes serao salvas no banco remoto.
+                  </p>
+                </div>
+                {store.hasLocalBackup && (
+                  <button
+                    onClick={handleMigrateLocalData}
+                    disabled={store.isMigrating}
+                    className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {store.isMigrating ? 'Migrando...' : 'Migrar dados locais'}
+                  </button>
+                )}
               </div>
             )}
             {store.error && (
@@ -180,4 +214,53 @@ export default function App() {
       </main>
     </div>
   );
+}
+
+export default function App() {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loadingSession, setLoadingSession] = useState(true);
+
+  useEffect(() => {
+    const token = getAuthToken();
+
+    if (!token) {
+      setLoadingSession(false);
+      return;
+    }
+
+    fetchJson<MeResponse>('/auth/me')
+      .then(response => {
+        setUser(response.user);
+      })
+      .catch(() => {
+        clearAuthToken();
+        setUser(null);
+      })
+      .finally(() => {
+        setLoadingSession(false);
+      });
+  }, []);
+
+  const handleAuthenticated = useCallback((currentUser: AuthUser) => {
+    setUser(currentUser);
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    clearAuthToken();
+    setUser(null);
+  }, []);
+
+  if (loadingSession) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-200">
+        Carregando sessao...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthScreen onAuthenticated={handleAuthenticated} />;
+  }
+
+  return <AuthenticatedApp user={user} onLogout={handleLogout} />;
 }

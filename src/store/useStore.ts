@@ -21,6 +21,7 @@ function buildSnapshot(
 
 export function useStore() {
   const initial = loadLocalSnapshot();
+  const initialHasLocalData = initial.clients.length > 0 || initial.orders.length > 0 || initial.expenses.length > 0;
   const [clients, setClients] = useState<Client[]>(initial.clients);
   const [orders, setOrders] = useState<ServiceOrder[]>(initial.orders);
   const [expenses, setExpenses] = useState<Expense[]>(initial.expenses);
@@ -29,6 +30,8 @@ export function useStore() {
   const [loading, setLoading] = useState(true);
   const [storageMode, setStorageMode] = useState<'local' | 'api'>('local');
   const [error, setError] = useState<string | null>(null);
+  const [hasLocalBackup, setHasLocalBackup] = useState(initialHasLocalData);
+  const [isMigrating, setIsMigrating] = useState(false);
   const driverRef = useRef<Awaited<ReturnType<typeof resolveDriver>> | null>(null);
   const initializedRef = useRef(false);
 
@@ -49,6 +52,7 @@ export function useStore() {
         setOrderCounter(snapshot.orderCounter);
         setCompanyState(snapshot.company ?? defaultCompany);
         setStorageMode(driver.kind);
+        setHasLocalBackup(initialHasLocalData);
         setError(null);
       } catch (currentError) {
         if (!mounted) {
@@ -160,12 +164,47 @@ export function useStore() {
     setCompanyState(data);
   }, []);
 
+  const migrateLocalDataToApi = useCallback(async () => {
+    if (storageMode !== 'api' || !driverRef.current) {
+      return false;
+    }
+
+    setIsMigrating(true);
+    try {
+      const localSnapshot = loadLocalSnapshot();
+      const hasData =
+        localSnapshot.clients.length > 0 ||
+        localSnapshot.orders.length > 0 ||
+        localSnapshot.expenses.length > 0;
+
+      if (!hasData) {
+        setError('Nao encontrei dados locais para migrar.');
+        return false;
+      }
+
+      await driverRef.current.save(localSnapshot);
+      setClients(localSnapshot.clients);
+      setOrders(localSnapshot.orders);
+      setExpenses(localSnapshot.expenses);
+      setOrderCounter(localSnapshot.orderCounter);
+      setCompanyState(localSnapshot.company ?? defaultCompany);
+      setHasLocalBackup(false);
+      setError(null);
+      return true;
+    } catch (currentError) {
+      setError(currentError instanceof Error ? currentError.message : 'Nao foi possivel migrar os dados locais.');
+      return false;
+    } finally {
+      setIsMigrating(false);
+    }
+  }, [storageMode]);
+
   return {
     clients, orders, expenses, company,
-    loading, storageMode, error,
+    loading, storageMode, error, hasLocalBackup, isMigrating,
     getClient, addClient, updateClient, deleteClient,
     addOrder, updateOrder, deleteOrder, changeStatus,
     addExpense, updateExpense, deleteExpense,
-    setCompany,
+    setCompany, migrateLocalDataToApi,
   };
 }

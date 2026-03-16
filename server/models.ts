@@ -23,6 +23,7 @@ const paymentSchema = new Schema(
 
 const clientSchema = new Schema(
   {
+    ownerId: { type: String, required: true, index: true },
     id: { type: String, required: true, unique: true, index: true },
     name: { type: String, required: true },
     email: { type: String, default: "" },
@@ -38,6 +39,7 @@ const clientSchema = new Schema(
 
 const orderSchema = new Schema(
   {
+    ownerId: { type: String, required: true, index: true },
     id: { type: String, required: true, unique: true, index: true },
     number: { type: Number, required: true, index: true },
     clientId: { type: String, required: true, index: true },
@@ -65,6 +67,7 @@ const orderSchema = new Schema(
 
 const expenseSchema = new Schema(
   {
+    ownerId: { type: String, required: true, index: true },
     id: { type: String, required: true, unique: true, index: true },
     description: { type: String, required: true },
     category: { type: String, required: true, index: true },
@@ -78,6 +81,7 @@ const expenseSchema = new Schema(
 
 const companySchema = new Schema(
   {
+    ownerId: { type: String, required: true, unique: true, index: true },
     name: { type: String, required: true },
     cnpj: { type: String, default: "" },
     phone: { type: String, default: "" },
@@ -88,7 +92,19 @@ const companySchema = new Schema(
   { versionKey: false }
 );
 
+const userSchema = new Schema(
+  {
+    id: { type: String, required: true, unique: true, index: true },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true, index: true },
+    passwordHash: { type: String, required: true },
+    createdAt: { type: Date, required: true },
+  },
+  { versionKey: false }
+);
+
 export const ClientModel = mongoose.models.Client || mongoose.model("Client", clientSchema);
 export const OrderModel = mongoose.models.Order || mongoose.model("Order", orderSchema);
 export const ExpenseModel = mongoose.models.Expense || mongoose.model("Expense", expenseSchema);
 export const CompanyModel = mongoose.models.Company || mongoose.model("Company", companySchema);
+export const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
