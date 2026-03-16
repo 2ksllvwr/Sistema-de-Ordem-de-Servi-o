@@ -23,7 +23,7 @@ export async function fetchJson<T>(path: string, init?: RequestInit): Promise<T>
     if (text) {
       try {
         const parsed = JSON.parse(text) as { message?: string };
-        throw new Error(parsed.message || text);
+        return Promise.reject(new Error(parsed.message || text));
       } catch {
         throw new Error(text);
       }

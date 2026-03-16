@@ -27,13 +27,21 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
     setError(null);
 
     try {
+      const payload = new URLSearchParams();
+
+      if (mode === "register") {
+        payload.set("name", name.trim());
+      }
+
+      payload.set("email", email.trim());
+      payload.set("password", password);
+
       const response = await fetchJson<AuthResponse>(`/auth/${mode}`, {
         method: "POST",
-        body: JSON.stringify(
-          mode === "register"
-            ? { name: name.trim(), email: email.trim(), password }
-            : { email: email.trim(), password }
-        ),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: payload.toString(),
       });
 
       setAuthToken(response.token);
