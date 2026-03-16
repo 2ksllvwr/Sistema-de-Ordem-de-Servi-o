@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LogIn, ShieldCheck, UserPlus } from "lucide-react";
+import { LogIn, UserPlus } from "lucide-react";
 import { fetchJson } from "../lib/api";
 import { setAuthToken, type AuthUser } from "../lib/session";
 import { AstraLogo } from "./Sidebar";
@@ -47,33 +47,9 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.18),_transparent_32%),linear-gradient(160deg,_#082f49,_#0f172a_60%,_#111827)] flex items-center justify-center p-4">
-      <div className="w-full max-w-5xl overflow-hidden rounded-[28px] border border-white/10 bg-white/95 shadow-2xl shadow-slate-950/40 lg:grid lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="hidden bg-slate-950 p-10 text-white lg:flex lg:flex-col lg:justify-between">
-          <div>
-            <div className="flex items-center gap-3">
-              <AstraLogo size={54} />
-              <div>
-                <h1 className="text-2xl font-black tracking-tight">Astra Tech</h1>
-                <p className="text-sm text-slate-400">Sistema de ordem de servico</p>
-              </div>
-            </div>
-            <div className="mt-12 space-y-5">
-              <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-5">
-                <p className="text-sm font-semibold text-cyan-300">Login centralizado</p>
-                <p className="mt-2 text-sm text-slate-300">Seu acesso passa a funcionar no web, no APK e no aplicativo desktop.</p>
-              </div>
-              <div className="space-y-3 text-sm text-slate-300">
-                <div className="flex items-center gap-3"><ShieldCheck size={18} className="text-emerald-400" /> Cada usuario acessa os proprios dados.</div>
-                <div className="flex items-center gap-3"><ShieldCheck size={18} className="text-emerald-400" /> O MongoDB fica protegido atras da API.</div>
-                <div className="flex items-center gap-3"><ShieldCheck size={18} className="text-emerald-400" /> O token fica salvo para reabrir o sistema mais rapido.</div>
-              </div>
-            </div>
-          </div>
-          <p className="text-xs text-slate-500">Entre para continuar a gerenciar seu negocio.</p>
-        </section>
-
+      <div className="w-full max-w-2xl overflow-hidden rounded-[28px] border border-white/10 bg-white/95 shadow-2xl shadow-slate-950/40">
         <section className="p-6 sm:p-8 lg:p-10">
-          <div className="mb-8 flex items-center gap-3 lg:hidden">
+          <div className="mb-8 flex items-center gap-3">
             <AstraLogo size={42} />
             <div>
               <h1 className="text-xl font-black tracking-tight text-slate-900">Astra Tech</h1>

@@ -20,7 +20,16 @@ export async function fetchJson<T>(path: string, init?: RequestInit): Promise<T>
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(text || `Erro HTTP ${response.status}`);
+    if (text) {
+      try {
+        const parsed = JSON.parse(text) as { message?: string };
+        throw new Error(parsed.message || text);
+      } catch {
+        throw new Error(text);
+      }
+    }
+
+    throw new Error(`Erro HTTP ${response.status}`);
   }
 
   return response.json() as Promise<T>;

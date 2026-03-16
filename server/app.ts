@@ -13,6 +13,23 @@ app.use(
   })
 );
 app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true, limit: "2mb" }));
+
+function getRequestPayload(req: express.Request) {
+  if (typeof req.body === "string") {
+    try {
+      return JSON.parse(req.body) as Record<string, unknown>;
+    } catch {
+      return {};
+    }
+  }
+
+  if (req.body && typeof req.body === "object") {
+    return req.body as Record<string, unknown>;
+  }
+
+  return {};
+}
 
 app.get("/api/health", async (_req, res) => {
   const databaseReady = await connectToDatabase();
@@ -35,7 +52,7 @@ app.post("/api/auth/register", async (req, res) => {
     return;
   }
 
-  const { name, email, password } = req.body ?? {};
+  const { name, email, password } = getRequestPayload(req);
 
   if (!name?.trim() || !email?.trim() || !password?.trim()) {
     res.status(400).json({ message: "Nome, email e senha sao obrigatorios." });
@@ -90,7 +107,7 @@ app.post("/api/auth/login", async (req, res) => {
     return;
   }
 
-  const { email, password } = req.body ?? {};
+  const { email, password } = getRequestPayload(req);
 
   if (!email?.trim() || !password?.trim()) {
     res.status(400).json({ message: "Email e senha sao obrigatorios." });
