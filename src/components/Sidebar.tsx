@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { LayoutDashboard, ClipboardList, Calculator, Users, Settings, PlusCircle, Menu, X, ChevronRight, Wallet } from 'lucide-react';
 
 export type Page = 'dashboard' | 'orders' | 'budgets' | 'clients' | 'financeiro' | 'new-order' | 'settings';
@@ -12,7 +13,7 @@ interface SidebarProps {
   onLogout: () => void;
 }
 
-const navItems: { page: Page; label: string; icon: React.ReactNode; section?: string }[] = [
+const navItems: { page: Page; label: string; icon: ReactNode; section?: string }[] = [
   { page: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
   { page: 'orders', label: 'Ordens de Servico', icon: <ClipboardList size={20} />, section: 'Gestao' },
   { page: 'budgets', label: 'Orcamentos', icon: <Calculator size={20} /> },
@@ -21,7 +22,7 @@ const navItems: { page: Page; label: string; icon: React.ReactNode; section?: st
   { page: 'settings', label: 'Configuracoes', icon: <Settings size={20} />, section: 'Sistema' },
 ];
 
-const bottomNavItems: { page: Page; label: string; icon: React.ReactNode }[] = [
+const bottomNavItems: { page: Page; label: string; icon: ReactNode }[] = [
   { page: 'dashboard', label: 'Inicio', icon: <LayoutDashboard size={20} /> },
   { page: 'orders', label: 'Ordens', icon: <ClipboardList size={20} /> },
   { page: 'new-order', label: 'Nova OS', icon: <PlusCircle size={22} /> },
@@ -76,6 +77,7 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
             </div>
           </div>
           <button
+            type="button"
             onClick={onToggleMobile}
             className="p-2 rounded-xl text-slate-300 hover:bg-slate-700/60 transition-colors"
             aria-label="Menu"
@@ -108,6 +110,7 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
                   </p>
                 )}
                 <button
+                  type="button"
                   onClick={() => handleNav(item.page)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isActive
@@ -134,6 +137,7 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
         <div className="p-4 border-t border-slate-700/50">
           <p className="mb-3 text-xs text-slate-400">Conectado como {userName}</p>
           <button
+            type="button"
             onClick={() => handleNav('new-order')}
             className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 shadow-lg shadow-cyan-500/25"
           >
@@ -141,6 +145,7 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
             Nova Ordem de Servico
           </button>
           <button
+            type="button"
             onClick={onLogout}
             className="mt-3 w-full rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white"
           >
@@ -156,6 +161,7 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
             const isNewOrder = item.page === 'new-order';
             return (
               <button
+                type="button"
                 key={item.page}
                 onClick={() => onNavigate(item.page)}
                 className={`flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 py-1 rounded-xl transition-all ${
@@ -209,6 +215,7 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
                   </p>
                 )}
                 <button
+                  type="button"
                   onClick={() => onNavigate(item.page)}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 ${
                     isActive
@@ -234,6 +241,7 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
         <div className="p-4 border-t border-slate-700/50">
           <p className="mb-3 text-xs text-slate-400">Conectado como {userName}</p>
           <button
+            type="button"
             onClick={() => onNavigate('new-order')}
             className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 shadow-lg shadow-cyan-500/25 active:scale-[0.98]"
           >
@@ -241,6 +249,7 @@ export default function Sidebar({ currentPage, onNavigate, mobileOpen, onToggleM
             Nova Ordem
           </button>
           <button
+            type="button"
             onClick={onLogout}
             className="mt-3 w-full rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-slate-700/50 hover:text-white"
           >

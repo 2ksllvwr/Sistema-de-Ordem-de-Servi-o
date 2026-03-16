@@ -21,7 +21,7 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
     setError(null);
@@ -67,12 +67,14 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
 
           <div className="mb-8 inline-flex rounded-2xl bg-slate-100 p-1">
             <button
+              type="button"
               onClick={() => setMode("login")}
               className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${mode === "login" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
             >
               Entrar
             </button>
             <button
+              type="button"
               onClick={() => setMode("register")}
               className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${mode === "register" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
             >

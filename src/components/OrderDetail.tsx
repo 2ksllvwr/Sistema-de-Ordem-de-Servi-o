@@ -37,7 +37,7 @@ export default function OrderDetail({ order, client, company, onBack, onChangeSt
       {/* Header */}
       <div className="flex items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <button onClick={onBack} className="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition shrink-0">
+          <button type="button" onClick={onBack} className="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition shrink-0">
             <ArrowLeft size={20} />
           </button>
           <div className="min-w-0">
@@ -49,7 +49,7 @@ export default function OrderDetail({ order, client, company, onBack, onChangeSt
           <span className={`text-xs sm:text-sm px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border font-semibold ${statusColors[order.status]}`}>
             {statusLabels[order.status]}
           </span>
-          <button onClick={onEdit} className="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition" title="Editar">
+          <button type="button" onClick={onEdit} className="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition" title="Editar">
             <Pencil size={18} />
           </button>
         </div>
@@ -64,6 +64,7 @@ export default function OrderDetail({ order, client, company, onBack, onChangeSt
             const isCurrent = s === order.status;
             return (
               <button
+                type="button"
                 key={s}
                 onClick={() => onChangeStatus(s)}
                 className={`flex-1 py-2 sm:py-2.5 px-1 rounded-lg text-[10px] sm:text-xs font-semibold text-center transition-all ${
@@ -81,6 +82,7 @@ export default function OrderDetail({ order, client, company, onBack, onChangeSt
         </div>
         {order.status !== 'cancelado' && (
           <button
+            type="button"
             onClick={() => onChangeStatus('cancelado')}
             className="mt-2 text-xs text-red-500 hover:text-red-700 transition font-medium"
           >
@@ -94,6 +96,7 @@ export default function OrderDetail({ order, client, company, onBack, onChangeSt
         <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">📄 Gerar Documentos</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <button
+            type="button"
             onClick={() => setPrintDoc('nota_servico')}
             className="flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl transition border border-blue-200"
           >
@@ -101,6 +104,7 @@ export default function OrderDetail({ order, client, company, onBack, onChangeSt
             <span className="text-[11px] sm:text-xs font-bold text-center leading-tight">Nota de Serviço</span>
           </button>
           <button
+            type="button"
             onClick={() => setPrintDoc('orcamento')}
             className="flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-xl transition border border-purple-200"
           >
@@ -108,6 +112,7 @@ export default function OrderDetail({ order, client, company, onBack, onChangeSt
             <span className="text-[11px] sm:text-xs font-bold text-center leading-tight">Orçamento</span>
           </button>
           <button
+            type="button"
             onClick={() => setPrintDoc('garantia')}
             className="flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-xl transition border border-amber-200"
           >
@@ -115,6 +120,7 @@ export default function OrderDetail({ order, client, company, onBack, onChangeSt
             <span className="text-[11px] sm:text-xs font-bold text-center leading-tight">Garantia</span>
           </button>
           <button
+            type="button"
             onClick={() => setPrintDoc('recibo')}
             className="flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl transition border border-emerald-200"
           >
@@ -233,6 +239,7 @@ export default function OrderDetail({ order, client, company, onBack, onChangeSt
             )}
             {order.payment.paidAmount < total && order.status !== 'cancelado' && (
               <button
+                type="button"
                 onClick={markAsPaid}
                 className="w-full mt-2 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-4 rounded-xl text-xs font-bold transition"
               >

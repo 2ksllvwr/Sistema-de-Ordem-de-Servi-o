@@ -67,13 +67,12 @@ export default function OrdersList({ orders, getClient, onEdit, onDelete, onChan
         </div>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
         <div className="relative flex-1">
           <Search size={18} className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Buscar por título, nº, cliente..."
+            placeholder="Buscar por titulo, numero, cliente..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-10 sm:pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
@@ -101,7 +100,7 @@ export default function OrdersList({ orders, getClient, onEdit, onDelete, onChan
               className="w-full sm:w-auto pl-9 pr-8 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
             >
               <option value="date">Data</option>
-              <option value="number">Número</option>
+              <option value="number">Numero</option>
               <option value="value">Valor</option>
               <option value="status">Status</option>
             </select>
@@ -109,7 +108,6 @@ export default function OrdersList({ orders, getClient, onEdit, onDelete, onChan
         </div>
       </div>
 
-      {/* ===== MOBILE CARDS ===== */}
       <div className="md:hidden space-y-3">
         {filtered.map(order => {
           const client = getClient(order.clientId);
@@ -145,15 +143,14 @@ export default function OrdersList({ orders, getClient, onEdit, onDelete, onChan
                 <span className="font-bold text-slate-800 text-sm">{formatCurrency(total)}</span>
               </div>
 
-              {/* Action buttons */}
               <div className="flex items-center gap-2 mt-2 pt-2 border-t border-slate-50" onClick={e => e.stopPropagation()}>
-                <button onClick={() => setSelectedOrder(order)} className="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
+                <button type="button" onClick={() => setSelectedOrder(order)} className="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
                   <Eye size={14} /> Detalhes
                 </button>
-                <button onClick={() => onEdit(order)} className="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium text-amber-600 bg-amber-50 rounded-lg hover:bg-amber-100 transition">
+                <button type="button" onClick={() => onEdit(order)} className="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium text-amber-600 bg-amber-50 rounded-lg hover:bg-amber-100 transition">
                   <Pencil size={14} /> Editar
                 </button>
-                <button onClick={() => { if (confirm('Excluir esta ordem?')) onDelete(order.id); }} className="py-2 px-3 text-xs text-red-500 bg-red-50 rounded-lg hover:bg-red-100 transition">
+                <button type="button" onClick={() => { if (confirm('Excluir esta ordem?')) onDelete(order.id); }} className="py-2 px-3 text-xs text-red-500 bg-red-50 rounded-lg hover:bg-red-100 transition">
                   <Trash2 size={14} />
                 </button>
               </div>
@@ -162,19 +159,18 @@ export default function OrdersList({ orders, getClient, onEdit, onDelete, onChan
         })}
       </div>
 
-      {/* ===== DESKTOP TABLE ===== */}
       <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
                 <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">OS</th>
-                <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Cliente / Serviço</th>
+                <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Cliente / Servico</th>
                 <th className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider hidden lg:table-cell">Equipamento</th>
                 <th className="px-4 py-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
                 <th className="px-4 py-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider hidden lg:table-cell">Pagamento</th>
                 <th className="px-4 py-3 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Valor</th>
-                <th className="px-4 py-3 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Ações</th>
+                <th className="px-4 py-3 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Acoes</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -206,7 +202,7 @@ export default function OrdersList({ orders, getClient, onEdit, onDelete, onChan
                         <span>{paymentLabels[order.payment.method]}</span>
                       </span>
                       {order.payment.paidAmount > 0 && (
-                        <span className="text-[10px] text-emerald-600 font-semibold">✓ Pago</span>
+                        <span className="text-[10px] text-emerald-600 font-semibold">Pago</span>
                       )}
                     </td>
                     <td className="px-4 py-3.5 text-right">
@@ -214,13 +210,14 @@ export default function OrdersList({ orders, getClient, onEdit, onDelete, onChan
                     </td>
                     <td className="px-4 py-3.5 text-right" onClick={e => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition">
-                        <button onClick={() => setSelectedOrder(order)} className="p-1.5 rounded-lg hover:bg-blue-100 text-slate-500 hover:text-blue-600 transition" title="Ver detalhes">
+                        <button type="button" onClick={() => setSelectedOrder(order)} className="p-1.5 rounded-lg hover:bg-blue-100 text-slate-500 hover:text-blue-600 transition" title="Ver detalhes">
                           <Eye size={16} />
                         </button>
-                        <button onClick={() => onEdit(order)} className="p-1.5 rounded-lg hover:bg-amber-100 text-slate-500 hover:text-amber-600 transition" title="Editar">
+                        <button type="button" onClick={() => onEdit(order)} className="p-1.5 rounded-lg hover:bg-amber-100 text-slate-500 hover:text-amber-600 transition" title="Editar">
                           <Pencil size={16} />
                         </button>
                         <button
+                          type="button"
                           onClick={() => { if (confirm('Excluir esta ordem?')) onDelete(order.id); }}
                           className="p-1.5 rounded-lg hover:bg-red-100 text-slate-500 hover:text-red-600 transition"
                           title="Excluir"
@@ -239,12 +236,11 @@ export default function OrdersList({ orders, getClient, onEdit, onDelete, onChan
         {filtered.length === 0 && (
           <div className="text-center py-16 text-slate-400">
             <p className="text-lg mb-1">Nenhuma ordem encontrada</p>
-            <p className="text-sm">Tente outro filtro ou crie uma nova ordem de serviço.</p>
+            <p className="text-sm">Tente outro filtro ou crie uma nova ordem de servico.</p>
           </div>
         )}
       </div>
 
-      {/* Mobile empty state */}
       {filtered.length === 0 && (
         <div className="md:hidden text-center py-12 text-slate-400">
           <p className="text-lg mb-1">Nenhuma ordem encontrada</p>

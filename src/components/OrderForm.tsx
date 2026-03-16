@@ -48,7 +48,7 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
   const subtotal = items.reduce((sum, i) => sum + i.quantity * i.unitPrice, 0);
   const total = subtotal - form.discount;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!form.clientId || !form.title.trim()) return;
 
@@ -87,21 +87,20 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
       <div className="flex items-center gap-3 mb-5">
-        <button onClick={onCancel} className="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition">
+        <button type="button" onClick={onCancel} className="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition">
           <ArrowLeft size={20} />
         </button>
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-800">
-            {editingOrder ? `Editar OS #${editingOrder.number}` : 'Nova Ordem de Serviço'}
+            {editingOrder ? `Editar OS #${editingOrder.number}` : 'Nova Ordem de Servico'}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500">Preencha as informações abaixo</p>
+          <p className="text-xs sm:text-sm text-slate-500">Preencha as informacoes abaixo</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* ====== DADOS GERAIS ====== */}
         <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100">
-          <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">📋 Dados Gerais</h2>
+          <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">Dados Gerais</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-600 mb-1">Cliente *</label>
@@ -125,40 +124,40 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
                 onChange={e => set('status', e.target.value)}
                 className="w-full border border-slate-200 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white"
               >
-                <option value="orcamento">Orçamento</option>
+                <option value="orcamento">Orcamento</option>
                 <option value="aberto">Aberto</option>
                 <option value="em_andamento">Em Andamento</option>
                 <option value="finalizado">Finalizado</option>
               </select>
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Título do Serviço *</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">Titulo do Servico *</label>
               <input
                 type="text"
                 value={form.title}
                 onChange={e => set('title', e.target.value)}
-                placeholder="Ex: Manutenção de Notebook Dell"
+                placeholder="Ex: Manutencao de Notebook Dell"
                 className="w-full border border-slate-200 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white"
                 required
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Descrição</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">Descricao</label>
               <textarea
                 value={form.description}
                 onChange={e => set('description', e.target.value)}
-                placeholder="Descreva o serviço a ser realizado..."
+                placeholder="Descreva o servico a ser realizado..."
                 rows={3}
                 className="w-full border border-slate-200 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white resize-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Técnico Responsável</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">Tecnico Responsavel</label>
               <input
                 type="text"
                 value={form.technician}
                 onChange={e => set('technician', e.target.value)}
-                placeholder="Nome do técnico"
+                placeholder="Nome do tecnico"
                 className="w-full border border-slate-200 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white"
               />
             </div>
@@ -175,9 +174,8 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
           </div>
         </div>
 
-        {/* ====== EQUIPAMENTO ====== */}
         <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100">
-          <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">🔧 Equipamento</h2>
+          <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">Equipamento</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-600 mb-1">Tipo de Equipamento</label>
@@ -198,7 +196,7 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
                 className="w-full border border-slate-200 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Nº de Série</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">N de Serie</label>
               <input type="text" value={form.serialNumber} onChange={e => set('serialNumber', e.target.value)}
                 placeholder="S/N do equipamento"
                 className="w-full border border-slate-200 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white" />
@@ -212,18 +210,16 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
           </div>
         </div>
 
-        {/* ====== ITENS / SERVIÇOS ====== */}
         <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-bold text-slate-700 flex items-center gap-2">💰 Itens e Serviços</h2>
+            <h2 className="text-sm font-bold text-slate-700 flex items-center gap-2">Itens e Servicos</h2>
             <button type="button" onClick={addItem} className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm font-semibold transition">
               <Plus size={16} /> Adicionar
             </button>
           </div>
 
-          {/* Desktop header */}
           <div className="hidden sm:grid grid-cols-12 gap-2 text-xs font-bold text-slate-500 uppercase px-1 mb-2">
-            <span className="col-span-5">Descrição</span>
+            <span className="col-span-5">Descricao</span>
             <span className="col-span-2">Qtd</span>
             <span className="col-span-2">Valor Unit.</span>
             <span className="col-span-2 text-right">Subtotal</span>
@@ -233,7 +229,6 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
           <div className="space-y-2">
             {items.map((item, idx) => (
               <div key={item.id} className="bg-slate-50 rounded-xl p-3 sm:p-2 border border-slate-100">
-                {/* Mobile layout */}
                 <div className="sm:hidden space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-500">Item {idx + 1}</span>
@@ -247,7 +242,7 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
                     type="text"
                     value={item.description}
                     onChange={e => updateItem(item.id, 'description', e.target.value)}
-                    placeholder="Descrição do item/serviço"
+                    placeholder="Descricao do item/servico"
                     className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                   />
                   <div className="grid grid-cols-3 gap-2">
@@ -278,13 +273,12 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
                   </div>
                 </div>
 
-                {/* Desktop layout */}
                 <div className="hidden sm:grid grid-cols-12 gap-2 items-center">
                   <input
                     type="text"
                     value={item.description}
                     onChange={e => updateItem(item.id, 'description', e.target.value)}
-                    placeholder="Descrição do item/serviço"
+                    placeholder="Descricao do item/servico"
                     className="col-span-5 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                   />
                   <input
@@ -314,7 +308,6 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
             ))}
           </div>
 
-          {/* Totals */}
           <div className="mt-4 pt-4 border-t border-slate-200 space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-500">Subtotal:</span>
@@ -336,9 +329,8 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
           </div>
         </div>
 
-        {/* ====== PAGAMENTO ====== */}
         <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100">
-          <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">💳 Pagamento</h2>
+          <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">Pagamento</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-600 mb-1">Forma de Pagamento</label>
@@ -367,32 +359,30 @@ export default function OrderForm({ clients, editingOrder, onSave, onUpdate, onC
             <div>
               <label className="block text-xs font-semibold text-slate-600 mb-1">Obs. Pagamento</label>
               <input type="text" value={form.paymentNotes} onChange={e => set('paymentNotes', e.target.value)}
-                placeholder="Observação sobre pagamento"
+                placeholder="Observacao sobre pagamento"
                 className="w-full border border-slate-200 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white" />
             </div>
           </div>
         </div>
 
-        {/* ====== OBSERVAÇÕES ====== */}
         <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100">
-          <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">📝 Observações</h2>
+          <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">Observacoes</h2>
           <textarea
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
-            placeholder="Observações adicionais..."
+            placeholder="Observacoes adicionais..."
             rows={3}
             className="w-full border border-slate-200 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white resize-none"
           />
         </div>
 
-        {/* ====== BOTÕES ====== */}
         <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pb-8">
           <button type="button" onClick={onCancel} className="px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition text-center">
             Cancelar
           </button>
           <button type="submit" className="flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm font-bold rounded-xl transition shadow-lg shadow-blue-500/25">
             <Save size={18} />
-            {editingOrder ? 'Salvar Alterações' : 'Criar Ordem de Serviço'}
+            {editingOrder ? 'Salvar Alteracoes' : 'Criar Ordem de Servico'}
           </button>
         </div>
       </form>

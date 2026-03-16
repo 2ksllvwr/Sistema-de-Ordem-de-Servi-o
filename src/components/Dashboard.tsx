@@ -23,9 +23,9 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
   const doneCount = orders.filter(o => o.status === 'finalizado').length;
   const budgetCount = orders.filter(o => o.status === 'orcamento').length;
 
-  const recentOrders = [...orders].sort((a, b) =>
-    new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  ).slice(0, 6);
+  const recentOrders = [...orders]
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .slice(0, 6);
 
   const paidOrders = orders.filter(o => o.payment.paidAmount > 0);
   const paymentMethodStats: Record<string, number> = {};
@@ -48,7 +48,7 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-800">Dashboard</h1>
-          <p className="text-xs sm:text-sm text-slate-500">Visão geral — Astra Tech</p>
+          <p className="text-xs sm:text-sm text-slate-500">Visao geral - Astra Tech</p>
         </div>
         <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-500">
           <Users size={14} />
@@ -59,7 +59,6 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
         </div>
       </div>
 
-      {/* Welcome banner when empty */}
       {isEmpty && (
         <div className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 rounded-2xl p-6 sm:p-8 text-white shadow-xl shadow-blue-500/20">
           <div className="flex items-start gap-4">
@@ -67,18 +66,20 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
               <Inbox size={28} />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold mb-1">Bem-vindo ao Astra Tech! 🚀</h2>
+              <h2 className="text-lg sm:text-xl font-bold mb-1">Bem-vindo ao Astra Tech!</h2>
               <p className="text-sm text-white/80 mb-4">
-                Seu sistema está pronto para uso. Comece cadastrando seus clientes e criando ordens de serviço.
+                Seu sistema esta pronto para uso. Comece cadastrando seus clientes e criando ordens de servico.
               </p>
               <div className="flex flex-wrap gap-2">
                 <button
+                  type="button"
                   onClick={() => onNavigate('clients')}
                   className="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl text-sm font-semibold transition"
                 >
                   <Users size={16} /> Cadastrar Cliente
                 </button>
                 <button
+                  type="button"
                   onClick={() => onNavigate('new-order')}
                   className="flex items-center gap-2 bg-white text-blue-600 hover:bg-white/90 px-4 py-2 rounded-xl text-sm font-bold transition"
                 >
@@ -90,7 +91,6 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
         </div>
       )}
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {cards.map((card, i) => (
           <div key={i} className={`bg-gradient-to-br ${card.color} rounded-2xl p-4 sm:p-5 text-white shadow-lg ${card.shadow}`}>
@@ -104,11 +104,8 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
-        {/* Status Overview */}
         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-100">
-          <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2 text-sm">
-            📊 Resumo por Status
-          </h3>
+          <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2 text-sm">Resumo por Status</h3>
           <div className="space-y-3">
             {([
               { status: 'orcamento' as const, count: budgetCount },
@@ -138,7 +135,6 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
           </div>
         </div>
 
-        {/* Payment Methods */}
         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-100">
           <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2 text-sm">
             <DollarSign size={16} className="text-slate-400" />
@@ -169,19 +165,20 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
           )}
         </div>
 
-        {/* Quick Actions */}
         <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-100">
-          <h3 className="font-bold text-slate-700 mb-4 text-sm">⚡ Ações Rápidas</h3>
+          <h3 className="font-bold text-slate-700 mb-4 text-sm">Acoes Rapidas</h3>
           <div className="space-y-2">
             <button
+              type="button"
               onClick={() => onNavigate('new-order')}
               className="w-full flex items-center gap-3 px-3 sm:px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl transition text-xs sm:text-sm font-medium"
             >
               <FileText size={18} />
-              <span className="flex-1 text-left">Nova Ordem de Serviço</span>
+              <span className="flex-1 text-left">Nova Ordem de Servico</span>
               <ArrowRight size={16} />
             </button>
             <button
+              type="button"
               onClick={() => onNavigate('clients')}
               className="w-full flex items-center gap-3 px-3 sm:px-4 py-3 bg-violet-50 hover:bg-violet-100 text-violet-700 rounded-xl transition text-xs sm:text-sm font-medium"
             >
@@ -190,6 +187,7 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
               <ArrowRight size={16} />
             </button>
             <button
+              type="button"
               onClick={() => onNavigate('financeiro')}
               className="w-full flex items-center gap-3 px-3 sm:px-4 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl transition text-xs sm:text-sm font-medium"
             >
@@ -198,23 +196,23 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
               <ArrowRight size={16} />
             </button>
             <button
+              type="button"
               onClick={() => onNavigate('budgets')}
               className="w-full flex items-center gap-3 px-3 sm:px-4 py-3 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-xl transition text-xs sm:text-sm font-medium"
             >
               <Clock size={18} />
-              <span className="flex-1 text-left">Orçamentos Pendentes</span>
+              <span className="flex-1 text-left">Orcamentos Pendentes</span>
               <ArrowRight size={16} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Recent Activity */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
-          <h3 className="font-bold text-slate-700 text-sm">📋 Atividade Recente</h3>
+          <h3 className="font-bold text-slate-700 text-sm">Atividade Recente</h3>
           {orders.length > 0 && (
-            <button onClick={() => onNavigate('orders')} className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
+            <button type="button" onClick={() => onNavigate('orders')} className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
               Ver todas <ArrowRight size={14} />
             </button>
           )}
@@ -226,14 +224,14 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
               const total = calcTotal(order.items, order.discount);
               return (
                 <div key={order.id} className="px-4 sm:px-5 py-3 sm:py-3.5 flex items-center gap-3 sm:gap-4 hover:bg-slate-50/50 transition">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-100 rounded-xl flex items-center justify-center text-base sm:text-lg shrink-0">
-                    {order.status === 'finalizado' ? '✅' : order.status === 'em_andamento' ? '⚙️' : order.status === 'orcamento' ? '📋' : '📂'}
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-100 rounded-xl flex items-center justify-center text-xs sm:text-sm shrink-0 font-bold text-slate-500">
+                    {order.status === 'finalizado' ? 'OK' : order.status === 'em_andamento' ? 'PROC' : order.status === 'orcamento' ? 'ORC' : 'OS'}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs sm:text-sm font-semibold text-slate-700 truncate">
-                      OS #{order.number} — {order.title}
+                      OS #{order.number} - {order.title}
                     </p>
-                    <p className="text-[11px] sm:text-xs text-slate-500">{client?.name || 'N/A'} • {formatDate(order.updatedAt)}</p>
+                    <p className="text-[11px] sm:text-xs text-slate-500">{client?.name || 'N/A'} - {formatDate(order.updatedAt)}</p>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-xs sm:text-sm font-bold text-slate-700">{formatCurrency(total)}</p>
@@ -247,9 +245,9 @@ export default function Dashboard({ orders, clients, getClient, onNavigate }: Da
           </div>
         ) : (
           <div className="text-center py-10">
-            <div className="text-4xl mb-2">📭</div>
+            <div className="text-4xl mb-2">-</div>
             <p className="text-slate-400 text-sm">Nenhuma atividade ainda</p>
-            <p className="text-slate-300 text-xs mt-1">Crie uma ordem de serviço para começar</p>
+            <p className="text-slate-300 text-xs mt-1">Crie uma ordem de servico para comecar</p>
           </div>
         )}
       </div>

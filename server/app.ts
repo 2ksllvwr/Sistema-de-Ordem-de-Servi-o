@@ -31,6 +31,11 @@ function getRequestPayload(req: express.Request) {
   return {};
 }
 
+function readStringField(payload: Record<string, unknown>, key: string) {
+  const value = payload[key];
+  return typeof value === "string" ? value.trim() : "";
+}
+
 app.get("/api/health", async (_req, res) => {
   const databaseReady = await connectToDatabase();
 
@@ -52,14 +57,17 @@ app.post("/api/auth/register", async (req, res) => {
     return;
   }
 
-  const { name, email, password } = getRequestPayload(req);
+  const requestData = getRequestPayload(req);
+  const name = readStringField(requestData, "name");
+  const email = readStringField(requestData, "email");
+  const password = readStringField(requestData, "password");
 
-  if (!name?.trim() || !email?.trim() || !password?.trim()) {
+  if (!name || !email || !password) {
     res.status(400).json({ message: "Nome, email e senha sao obrigatorios." });
     return;
   }
 
-  const normalizedEmail = String(email).trim().toLowerCase();
+  const normalizedEmail = email.toLowerCase();
   const existingUser = await UserModel.findOne({ email: normalizedEmail }).lean();
 
   if (existingUser) {
@@ -70,9 +78,9 @@ app.post("/api/auth/register", async (req, res) => {
   const userId = `u_${crypto.randomUUID()}`;
   const user = await UserModel.create({
     id: userId,
-    name: String(name).trim(),
+    name,
     email: normalizedEmail,
-    passwordHash: await hashPassword(String(password)),
+    passwordHash: await hashPassword(password),
     createdAt: new Date(),
   });
 
@@ -85,15 +93,15 @@ app.post("/api/auth/register", async (req, res) => {
     address: "",
   });
 
-  const payload = {
+  const authPayload = {
     userId: user.id,
     email: user.email,
     name: user.name,
   };
 
   res.status(201).json({
-    token: signToken(payload),
-    user: payload,
+    token: signToken(authPayload),
+    user: authPayload,
   });
 });
 
@@ -107,30 +115,32 @@ app.post("/api/auth/login", async (req, res) => {
     return;
   }
 
-  const { email, password } = getRequestPayload(req);
+  const requestData = getRequestPayload(req);
+  const email = readStringField(requestData, "email");
+  const password = readStringField(requestData, "password");
 
-  if (!email?.trim() || !password?.trim()) {
+  if (!email || !password) {
     res.status(400).json({ message: "Email e senha sao obrigatorios." });
     return;
   }
 
-  const normalizedEmail = String(email).trim().toLowerCase();
+  const normalizedEmail = email.toLowerCase();
   const user = await UserModel.findOne({ email: normalizedEmail });
 
-  if (!user || !(await comparePassword(String(password), user.passwordHash))) {
+  if (!user || !(await comparePassword(password, user.passwordHash))) {
     res.status(401).json({ message: "Email ou senha invalidos." });
     return;
   }
 
-  const payload = {
+  const authPayload = {
     userId: user.id,
     email: user.email,
     name: user.name,
   };
 
   res.json({
-    token: signToken(payload),
-    user: payload,
+    token: signToken(authPayload),
+    user: authPayload,
   });
 });
 
