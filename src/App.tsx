@@ -6,13 +6,22 @@ import OrderForm from './components/OrderForm';
 import ClientsList from './components/ClientsList';
 import CompanySettings from './components/CompanySettings';
 import Financeiro from './components/Financeiro';
-import AuthScreen from './components/AuthScreen';
 import { useStore } from './store/useStore';
 import { ServiceOrder } from './types';
 import { fetchJson } from './lib/api';
-import { clearAuthToken, getAuthToken, type AuthUser } from './lib/session';
+import { clearAuthToken, setAuthToken, type AuthUser } from './lib/session';
 
-interface MeResponse {
+const DIRECT_ACCESS_USER: AuthUser = {
+  userId: 'local-direct-access',
+  email: 'local@astra-os.app',
+  name: 'Astra | OS',
+};
+
+const ROOT_EMAIL = 'admin@astratech.local';
+const ROOT_PASSWORD = 'AstraTech2026!';
+
+interface AuthResponse {
+  token: string;
   user: AuthUser;
 }
 
@@ -181,7 +190,7 @@ function AuthenticatedApp({ user, onLogout }: { user: AuthUser; onLogout: () => 
           <div className="max-w-7xl mx-auto">
             {store.storageMode === 'local' && (
               <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                Banco remoto ainda nao conectado. O sistema esta funcionando com armazenamento local.
+                Sistema em acesso direto. Os dados estao funcionando com armazenamento local neste dispositivo.
               </div>
             )}
             {store.storageMode === 'api' && (
@@ -194,6 +203,7 @@ function AuthenticatedApp({ user, onLogout }: { user: AuthUser; onLogout: () => 
                 </div>
                 {store.hasLocalBackup && (
                   <button
+                    type="button"
                     onClick={handleMigrateLocalData}
                     disabled={store.isMigrating}
                     className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
@@ -217,49 +227,45 @@ function AuthenticatedApp({ user, onLogout }: { user: AuthUser; onLogout: () => 
 }
 
 export default function App() {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loadingSession, setLoadingSession] = useState(true);
+  const [user, setUser] = useState<AuthUser>(DIRECT_ACCESS_USER);
+  const [booting, setBooting] = useState(true);
+
+  const handleLogout = useCallback(() => {
+    clearAuthToken();
+    setUser(DIRECT_ACCESS_USER);
+  }, []);
 
   useEffect(() => {
-    const token = getAuthToken();
+    const payload = new URLSearchParams();
+    payload.set('email', ROOT_EMAIL);
+    payload.set('password', ROOT_PASSWORD);
 
-    if (!token) {
-      setLoadingSession(false);
-      return;
-    }
-
-    fetchJson<MeResponse>('/auth/me')
+    fetchJson<AuthResponse>('/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: payload.toString(),
+    })
       .then(response => {
+        setAuthToken(response.token);
         setUser(response.user);
       })
       .catch(() => {
         clearAuthToken();
-        setUser(null);
+        setUser(DIRECT_ACCESS_USER);
       })
       .finally(() => {
-        setLoadingSession(false);
+        setBooting(false);
       });
   }, []);
 
-  const handleAuthenticated = useCallback((currentUser: AuthUser) => {
-    setUser(currentUser);
-  }, []);
-
-  const handleLogout = useCallback(() => {
-    clearAuthToken();
-    setUser(null);
-  }, []);
-
-  if (loadingSession) {
+  if (booting) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-200">
-        Carregando sessao...
+        Conectando ao sistema...
       </div>
     );
-  }
-
-  if (!user) {
-    return <AuthScreen onAuthenticated={handleAuthenticated} />;
   }
 
   return <AuthenticatedApp user={user} onLogout={handleLogout} />;

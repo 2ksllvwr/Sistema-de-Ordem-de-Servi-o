@@ -22,6 +22,9 @@ out/
 # Gradle files
 .gradle/
 build/
+build-clean/
+.gradle-user-home/
+.gradle-user-home-release/
 
 # Local configuration file (sdk path, etc)
 local.properties

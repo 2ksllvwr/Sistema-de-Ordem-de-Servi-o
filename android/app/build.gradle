@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+buildDir = file('build-clean')
+
 def keystorePropertiesFile = rootProject.file('keystore.properties')
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {

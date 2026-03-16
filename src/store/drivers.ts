@@ -1,4 +1,5 @@
 import { fetchJson, isApiConfigured } from "../lib/api";
+import { getAuthToken } from "../lib/session";
 import { CompanyInfo, defaultCompany } from "../types";
 import { StoreDriver, StoreSnapshot } from "../types/store";
 
@@ -85,6 +86,10 @@ const apiDriver: StoreDriver = {
 
 export async function resolveDriver(): Promise<StoreDriver> {
   if (!isApiConfigured()) {
+    return localDriver;
+  }
+
+  if (!getAuthToken()) {
     return localDriver;
   }
 
