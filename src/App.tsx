@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Sidebar, { Page } from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import OrdersList from './components/OrdersList';
@@ -228,7 +228,7 @@ function AuthenticatedApp({ user, onLogout }: { user: AuthUser; onLogout: () => 
 
 export default function App() {
   const [user, setUser] = useState<AuthUser>(DIRECT_ACCESS_USER);
-  const [booting, setBooting] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
 
   const handleLogout = useCallback(() => {
     clearAuthToken();
@@ -236,6 +236,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 8000);
     const payload = new URLSearchParams();
     payload.set('email', ROOT_EMAIL);
     payload.set('password', ROOT_PASSWORD);
@@ -246,6 +248,7 @@ export default function App() {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
       body: payload.toString(),
+      signal: controller.signal,
     })
       .then(response => {
         setAuthToken(response.token);
@@ -256,17 +259,17 @@ export default function App() {
         setUser(DIRECT_ACCESS_USER);
       })
       .finally(() => {
-        setBooting(false);
+        window.clearTimeout(timeoutId);
+        setAuthChecked(true);
       });
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, []);
 
-  if (booting) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-200">
-        Conectando ao sistema...
-      </div>
-    );
-  }
+  const appKey = useMemo(() => `${user.userId}:${authChecked ? 'ready' : 'pending'}`, [user.userId, authChecked]);
 
-  return <AuthenticatedApp user={user} onLogout={handleLogout} />;
+  return <AuthenticatedApp key={appKey} user={user} onLogout={handleLogout} />;
 }

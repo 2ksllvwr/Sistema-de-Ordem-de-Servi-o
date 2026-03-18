@@ -31,12 +31,13 @@ export function getApiBaseUrl() {
     return envUrl;
   }
 
-  if (typeof window !== "undefined" && window.location.protocol.startsWith("http")) {
-    return normalizeApiBaseUrl(new URL("/.netlify/functions/api", window.location.origin).toString());
-  }
-
+  // Native apps should talk to the public backend, not the embedded localhost origin.
   if (Capacitor.isNativePlatform()) {
     return DEFAULT_PUBLIC_API_URL;
+  }
+
+  if (typeof window !== "undefined" && window.location.protocol.startsWith("http")) {
+    return normalizeApiBaseUrl(new URL("/.netlify/functions/api", window.location.origin).toString());
   }
 
   return DEFAULT_PUBLIC_API_URL;
